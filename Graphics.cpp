@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "C:\Program Files (x86)\TX\TXLib.h"
+#include "C:\Users\alexe\Desktop\TX\TXLib.h"
 #include "Graphics.h"
 #include <ctime>
 
@@ -24,17 +24,23 @@ void Graphics::Create(Vector2 p)
 	txCreateWindow ( p.x_, p.y_, true );
 	//printf("p = {%lg, %lg} !\n", p.x_, p.y_);
 	txTextCursor(false);
+    txDisableAutoPause();
+
+    txBegin();
+//  _txCanvas_RefreshLock = 100500;
 }
 
 void Graphics::begin()
 {
-	txBegin ();
+//	txBegin ();
 }
 
 void Graphics::end()
 {
-	record();
-	txEnd ();
+//  record();
+
+//	txEnd ();
+
 		/*static int n = 0;
 		char name[70] = "";
 		time (&StartTime);
@@ -74,8 +80,8 @@ void Graphics::record()
 			/*char cwd[300] = "";
 			_getcwd(cwd, sizeof(cwd));
 			printf("|mkdir| \t\t%s|%s\n", cwd, folder);*/
-			_mkdir("video");
-			_mkdir(folder);
+			(void) _mkdir("video");
+			(void) _mkdir(folder);
 		}
 		if (state == 0)
 		{
@@ -210,29 +216,35 @@ void Graphics::setCursorPosition(Vector2 coord)
  	txSetConsoleCursorPos(coord.x_, coord.y_);
 }
  
-void Graphics::alphaBlend(HDC dest, Vector2 coord, Vector2 size, HDC source, Vector2 piccoord, double alpha)
+HDC Graphics::createDC(Vector2 size)
 {
-	printf("%p, {%lg, %lg}, {%lg, %lg}, %p, {%lg, %lg}, %lg\n", dest, coord.x_, txGetExtentY() - coord.y_ - size.y_, size.x_, size.y_, source, piccoord.x_, piccoord.y_, alpha);
- 	txAlphaBlend(dest, coord.x_, txGetExtentY() - coord.y_ - size.y_, size.x_, size.y_, source, piccoord.x_, piccoord.y_, alpha);
+    return txCreateDIBSection (size.x_, size.y_);
+}
+
+void Graphics::deleteDC(HDC dc)
+{
+    txDeleteDC(dc);
 }
 
 void Graphics::bitBlt(HDC dest, Vector2 coord, Vector2 size, HDC source, Vector2 piccoord)
 {
-	txBitBlt(dest, coord.x_, txGetExtentY() - coord.y_ - size.y_, size.x_, size.y_, source, piccoord.x_, piccoord.y_);
+    txBitBlt(dest, coord.x_, txGetExtentY() - coord.y_ - size.y_, size.x_, size.y_, source, piccoord.x_, piccoord.y_);
 }
 
-HDC Graphics::createDC(Vector2 size)
+void Graphics::alphaBlend(HDC dest, Vector2 coord, Vector2 size, HDC source, Vector2 piccoord, double alpha)
 {
-	//return txCreateCompatibleDC(size.x_, size.y_);
-	return txCreateDIBSection(size.x_, size.y_);
+	printf("%p, {%lg, %lg}, {%lg, %lg}, %p, {%lg, %lg}, %lg\n", dest, coord.x_, txGetExtentY() - coord.y_ - size.y_, size.x_, size.y_, source, piccoord.x_, piccoord.y_, alpha);
+   	txAlphaBlend                                               (dest, coord.x_, txGetExtentY() - coord.y_ - size.y_, size.x_, size.y_, source, piccoord.x_, piccoord.y_, alpha);
 }
- 
+
 COLORREF Graphics::setBrightness (COLORREF color, double brightness)
 {
 	if (brightness < 0) brightness = -brightness;
-	int r = txExtractColor(color, TX_RED)*brightness;
-	int g = txExtractColor(color, TX_GREEN)*brightness;
-	int b = txExtractColor(color, TX_BLUE)*brightness;
+
+	int r = (int) (txExtractColor(color, TX_RED)   * brightness);
+	int g = (int) (txExtractColor(color, TX_GREEN) * brightness);
+	int b = (int) (txExtractColor(color, TX_BLUE)  * brightness);
+
 	return RGB((r > 255 ? 255 : r), (g > 255 ? 255 : g), (b > 255 ? 255 : b));
 }
 

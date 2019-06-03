@@ -39,7 +39,8 @@ public:
 	static void alphaBlend(HDC dest, Vector2 coord, Vector2 size, HDC source, Vector2 piccoord , double alpha);
 	static void bitBlt(HDC dest, Vector2 coord, Vector2 size, HDC source, Vector2 piccoord);
 	static HDC  createDC(Vector2 size);
-	static COLORREF setBrightness (COLORREF color, double k);
+    static void deleteDC(HDC dc);
+    static COLORREF setBrightness (COLORREF color, double k);
 	static COLORREF colorRGB (double r, double g, double b); 
 	static COLORREF colorInverse(COLORREF color);
    ~Graphics ();

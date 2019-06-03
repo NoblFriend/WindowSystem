@@ -1,5 +1,6 @@
+#include "windows.h"
 #include "Vector2.h"
-
+                            
 Vector2::Vector2 (POINT p) 
 	:	x_(p.x),
    	 	y_(p.y)

@@ -1,7 +1,7 @@
 #include "Mouse.h"
 
-CMouse CMouse::Cur__ = CMouse::CMouse();
-CMouse CMouse::Old__ = CMouse::CMouse();
+CMouse CMouse::Cur__ = CMouse();
+CMouse CMouse::Old__ = CMouse();
 unsigned CMouse::msg_ = 0;
 
 CMouse::CMouse() :

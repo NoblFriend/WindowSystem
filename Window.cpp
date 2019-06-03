@@ -1,5 +1,6 @@
 #include "Window.h"
 #include <conio.h>
+#include <stdio.h>
 
 static WindowContainer* DesktopWindow;
 
@@ -36,7 +37,7 @@ void Window::on_draw()
 	//Graphics::get()->drawText({ coord_.x_ + size_.x_*0.5, coord_.y_ + size_.y_- 10}, name_, { 8,16 }, Graphics::get()->colorInverse(color_));
 }
 
-void Window::on_mouse(CMouse mouse)
+void Window::on_mouse(CMouse)
 {
 	
 }
@@ -357,7 +358,7 @@ void WindowButton::on_draw()
 		}
 }
 
-void WindowButton::on_mouse(CMouse mouse)
+void WindowButton::on_mouse(CMouse)
 {
 	if (!pstate)
 	{
@@ -404,16 +405,27 @@ OverlayWindow::OverlayWindow(Vector2 coord, Vector2 size, const char* name, COLO
 void OverlayWindow::on_draw()
 {
 	WindowContainer* desktop = getDesktopWindow();
-	static HDC dc = Graphics::get()->createDC(desktop->size_);
-	Graphics::get()->alphaBlend(Graphics::get()->getDC(), desktop->abscoord_, desktop->size_, dc, { 0,0 }, 0.5);
-	printf("desktop->coord_ = {%lg, %lg}\n", desktop->coord_.x_, desktop->coord_.y_);
-	Graphics::get()->sleep(1000);
-	printf("good morning\n");
-	//Graphics::get()->drawRectangle(desktop->abscoord_, desktop->abscoord_ + desktop->size_, 1, Graphics::get()->colorRGB(255, 0, 0), Graphics::get()->colorRGB(255, 0, 0));
+//  printf("%s: desktop->coord_ = {%lg, %lg}\n", __FUNCSIG__, desktop->coord_.x_, desktop->coord_.y_);
+
+    static struct res 
+        {
+        HDC dc;
+        res (WindowContainer* desktop) : dc (Graphics::get()->createDC(desktop->size_)) {}; 
+       ~res() { Graphics::get()->deleteDC (dc); } 
+       } 
+       res (desktop);
+
+    Graphics::get()->alphaBlend(Graphics::get()->getDC(), desktop->abscoord_, desktop->size_, res.dc, { 0,0 }, 0.8);
+
+//	Graphics::get()->sleep(1000);
+//	printf("%s: done sleep\n", __FUNCSIG__);
+
+//  Graphics::get()->drawRectangle(desktop->abscoord_, desktop->abscoord_ + desktop->size_, 1, Graphics::get()->colorRGB(255, 0, 0), Graphics::get()->colorRGB(255, 0, 0));
+
 	Window::on_draw();
 }
 
-void OverlayWindow::on_mouse(CMouse mouse)
+void OverlayWindow::on_mouse(CMouse)
 {
 
 }

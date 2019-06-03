@@ -1,6 +1,6 @@
 #pragma once
-#include "C:\Users\alexe\Documents\GitHub\SolarSystem\Vector2.h"
-#include "C:\Users\alexe\Documents\GitHub\SolarSystem\Graphics.h"
+#include "Vector2.h"
+#include "Graphics.h"
 
 class CMouse
 {
